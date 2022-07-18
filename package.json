@@ -7,7 +7,7 @@
     "build": "tsc",
     "start":"yarn build && node dist/src/index.js"
   },
-  "author": "EdersonDavi <ederson.silva@sunoresearch.com.br>",
+  "author": "EdersonDav <silva.eersonQueiroz@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@types/module-alias": "^2.0.1",
