@@ -10,14 +10,12 @@ export class SetupServer extends Server {
   }
 
   private setupExpress(): void {
-    this.app.use(bodyparser.json())
+    this.app.use(bodyparser.json());
   }
 
   private setupControllers(): void {
     const forecastController = new ForecastController();
-    this.addControllers([
-      forecastController
-    ])
+    this.addControllers([forecastController]);
   }
 
   public init(): void {
