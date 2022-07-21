@@ -12,7 +12,8 @@
     "test:functional": "jest --projects ./test --runInBand",
     "style:check": "prettier --check 'src/**/*.ts' 'test/**/*.ts'",
     "style:fix": "prettier --write 'src/**/*.ts' 'test/**/*.ts'",
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "start:local": "ts-node-dev --transpile-only src/index.ts"
   },
   "author": "EdersonDav <silva.edersonQueiroz@gmail.com>",
   "license": "MIT",
