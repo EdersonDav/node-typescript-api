@@ -4,6 +4,8 @@ import bodyparser from 'body-parser';
 import { ForecastController } from './controllers/forecast';
 import { Application } from 'express';
 
+import * as database from '@src/database'
+
 export class SetupServer extends Server {
   constructor(private port = 3000) {
     super();
@@ -18,12 +20,21 @@ export class SetupServer extends Server {
     this.addControllers([forecastController]);
   }
 
-  public init(): void {
+  public async init(): Promise<void> {
     this.setupExpress();
     this.setupControllers();
+    await this.databaseSetup()
   }
 
   public getApp(): Application {
     return this.app;
+  }
+
+  private async databaseSetup(): Promise<void> {
+    await database.connect()
+  }
+
+  public async close(): Promise<void> {
+    await database.close()
   }
 }

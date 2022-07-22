@@ -1,8 +1,14 @@
 import { SetupServer } from '@src/server';
 import supertest from 'supertest';
 
-beforeAll(() => {
+const server = new SetupServer();
+
+beforeAll(async () => {
   const server = new SetupServer();
-  server.init();
+  await server.init();
   global.testRequest = supertest(server.getApp());
 });
+
+afterAll(async () => {
+  await server.close();
+})
