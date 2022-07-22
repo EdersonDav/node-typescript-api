@@ -15,17 +15,23 @@ export interface Beach {
   user: string;
 }
 
+export interface TimeForecast {
+  time: string;
+  forecast: BeachForecast[];
+}
+
 export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint { }
 
 export class Forecast {
   constructor(protected stormGlass = new StormGlass()) { }
 
-  public async processForecastForBeaches(beaches: Beach[]): Promise<BeachForecast[]> {
+  public async processForecastForBeaches(beaches: Beach[]): Promise<TimeForecast[]> {
     const pointsWithCorretSources: BeachForecast[] = [];
 
     for (const beach of beaches) {
       const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
       const enrichedBeachData = points.map(e => ({
+        ...{},
         ...{
           lat: beach.lat,
           lng: beach.lng,
@@ -38,6 +44,26 @@ export class Forecast {
       pointsWithCorretSources.push(...enrichedBeachData)
     }
 
-    return pointsWithCorretSources
+    return this.mapForecastByTime(pointsWithCorretSources)
+  }
+
+  private mapForecastByTime(forecast: BeachForecast[]): TimeForecast[] {
+    const forecastBytime: TimeForecast[] = [];
+
+    forecast.forEach(point => {
+      const timePoint = forecastBytime.find(f => f.time === point.time);
+
+      if (timePoint) {
+        timePoint.forecast.push(point)
+      } else {
+        forecastBytime.push({
+          time: point.time,
+          forecast: [point]
+        })
+      }
+
+    })
+
+    return forecastBytime;
   }
 }
