@@ -1,6 +1,8 @@
 import { InternalError } from '../util/errors/internal-error';
 import * as HTTPUtil from '@src/util/request';
 import config, { IConfig } from "config";
+import dotenv from 'dotenv';
+dotenv.config()
 
 export interface StormGlassPointSource {
   [key: string]: number;
@@ -65,7 +67,7 @@ export class StormGlass {
         }&source=${this.stormGlassAPISource}`,
         {
           headers: {
-            Authorization: stormglassResourceConfig.get('apiToken'),
+            Authorization: process.env.TOKEN || '',
           },
         }
       );
