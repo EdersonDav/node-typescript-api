@@ -1,7 +1,24 @@
-import { Beach } from '../../src/models/Beach';
+import { Beach } from '@src/models/Beach';
+import { User } from '@src/models/User';
+import AuthService from '@src/services/auth';
 
 describe('Beaches functional tests', () => {
-  beforeAll(async () => await Beach.deleteMany({}))
+  const defaultUser = {
+    name: 'John Doe',
+    email: 'john@mail.com',
+    password: '1234',
+  }
+
+  let token: string;
+
+  beforeEach(async () => {
+    await Beach.deleteMany({});
+    await User.deleteMany({});
+
+    const user = await new User(defaultUser).save();
+    token = AuthService.generateToken(user.toJSON())
+  });
+
   describe('When create a beach', () => {
     it('should create a beach succes', async () => {
       const newBeach = {
@@ -11,7 +28,7 @@ describe('Beaches functional tests', () => {
         position: 'E',
       };
 
-      const response = await global.testRequest.post('/beaches').send(newBeach);
+      const response = await global.testRequest.post('/beaches').set({ 'x-access-token': token }).send(newBeach);
 
       expect(response.status).toBe(201);
       expect(response.body).toEqual(expect.objectContaining(newBeach))
@@ -24,7 +41,7 @@ describe('Beaches functional tests', () => {
         name: 'Manly',
         position: 'E',
       };
-      const response = await global.testRequest.post('/beaches').send(newBeach);
+      const response = await global.testRequest.post('/beaches').set({ 'x-access-token': token }).send(newBeach);
 
       expect(response.status).toBe(422);
       expect(response.body).toEqual({
@@ -33,8 +50,8 @@ describe('Beaches functional tests', () => {
       });
     });
 
-    it.skip('should return 500 when there is any error other than validation error', async () => {
-      //TODO think in a way to throw a 500
-    });
+    // it.skip('should return 500 when there is any error other than validation error', async () => {
+    //   //TODO think in a way to throw a 500
+    // });
   })
 })
